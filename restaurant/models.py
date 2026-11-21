@@ -62,9 +62,9 @@ class Dish(models.Model):
             img = flat
         else:
             img = img.convert("RGB")
-        img.thumbnail((900, 900))
+        img.thumbnail((1400, 1400))
         buffer = BytesIO()
-        img.save(buffer, "JPEG", quality=80, optimize=True)
+        img.save(buffer, "JPEG", quality=82, optimize=True)
         self.photo_data = buffer.getvalue()
         self.photo_version += 1
 

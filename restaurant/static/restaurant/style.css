@@ -34,12 +34,12 @@ main{max-width:1100px;margin:0 auto;padding:36px 5vw 70px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 26px}
 .chip{border:1px solid var(--gold);border-radius:99px;padding:6px 16px;text-decoration:none;color:var(--ink)}
 .chip.on{background:var(--claret);color:var(--gold2);border-color:var(--claret)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
 .card,.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 .panel{padding:18px;margin-bottom:16px}
 .card{overflow:hidden;display:flex;flex-direction:column;transition:transform .2s}
 .card:hover{transform:translateY(-4px)}
-.pic{height:180px;overflow:hidden;display:grid;place-items:center;font-size:4rem;background:radial-gradient(circle at 30% 20%,#7d1b34,var(--claret2))}
+.pic{aspect-ratio:4/3;overflow:hidden;display:grid;place-items:center;font-size:4rem;background:radial-gradient(circle at 30% 20%,#7d1b34,var(--claret2))}
 .pic img{width:100%;height:100%;object-fit:cover;display:block}
 .cb{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
 .cb h3{font-size:1.5rem}.cb p{margin:0;color:var(--muted);font-size:.92rem;flex:1}
@@ -83,3 +83,11 @@ footer{text-align:center;padding:30px;background:var(--claret2);color:#cdb89a;fo
 .stat b{font:700 1.9rem 'Cormorant Garamond',serif;color:var(--claret)}
 .barcell{width:30%}.bar{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
 tr.total td{font-weight:600;background:var(--bg)}
+
+.zoom{border:0;padding:0;background:none;width:100%;height:100%;display:block;cursor:zoom-in}
+.zoom img{transition:transform .35s}.zoom:hover img{transform:scale(1.04)}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(20,5,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;cursor:zoom-out}
+.lb[hidden]{display:none}
+.lb img{max-width:min(94vw,1100px);max-height:80vh;object-fit:contain;border-radius:14px;border:2px solid var(--gold);background:#000}
+.lb p{color:var(--gold2);font:700 1.7rem 'Cormorant Garamond',serif;margin:0}
+.lbx{position:absolute;top:14px;right:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);background:transparent;color:var(--gold2);font-size:1.2rem;cursor:pointer}

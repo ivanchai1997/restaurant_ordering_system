@@ -18,7 +18,7 @@
 <div class="grid">
   {% for d in dishes %}
   <article class="card">
-    <div class="pic">{% if d.photo_url %}<img src="{{ d.photo_url }}" alt="{{ d.name }}" loading="lazy">{% else %}{{ d.emoji }}{% endif %}</div>
+    <div class="pic">{% if d.photo_url %}<button type="button" class="zoom" data-full="{{ d.photo_url }}" data-title="{{ d.name }}" aria-label="Enlarge photo of {{ d.name }}"><img src="{{ d.photo_url }}" alt="{{ d.name }}" loading="lazy"></button>{% else %}{{ d.emoji }}{% endif %}</div>
     <div class="cb">
       <h3>{{ d.name }}</h3><p>{{ d.description }}</p>
       <div class="row"><span class="price">RM {{ d.price|floatformat:2 }}</span>
