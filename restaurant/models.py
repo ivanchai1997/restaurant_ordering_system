@@ -1,5 +1,8 @@
+from io import BytesIO
+
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -14,14 +17,25 @@ class Category(models.Model):
         return self.name
 
 
+class DishManager(models.Manager):
+    """Never load the photo bytes unless they are asked for, so menu pages stay fast."""
+
+    def get_queryset(self):
+        return super().get_queryset().defer("photo_data")
+
+
 class Dish(models.Model):
     category = models.ForeignKey(Category, related_name="dishes", on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=250, blank=True)
     price = models.DecimalField("Price (RM)", max_digits=8, decimal_places=2)
-    photo = models.ImageField(upload_to="dishes/", blank=True, null=True)
+    photo = models.ImageField(upload_to="dishes/", blank=True, null=True)  # old field, no longer used
+    photo_data = models.BinaryField(null=True, blank=True, editable=False)  # photo is stored in the database
+    photo_version = models.PositiveIntegerField(default=0, editable=False)  # 0 means no photo
     emoji = models.CharField(max_length=8, blank=True, default="🍽️", help_text="Shown when there is no photo.")
     is_available = models.BooleanField("Shown on menu", default=True)
+
+    objects = DishManager()
 
     class Meta:
         ordering = ["category__position", "name"]
@@ -29,6 +43,34 @@ class Dish(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def photo_url(self):
+        if not self.photo_version:
+            return ""
+        return f"{reverse('dish_photo', args=[self.pk])}?v={self.photo_version}"
+
+    def set_photo(self, file):
+        """Shrink the upload to a web-sized JPEG and keep it in the database (Vercel has no writable disk)."""
+        from PIL import Image, ImageOps
+
+        img = ImageOps.exif_transpose(Image.open(file))
+        if img.mode in ("RGBA", "LA", "P"):
+            img = img.convert("RGBA")
+            flat = Image.new("RGB", img.size, "white")
+            flat.paste(img, mask=img.getchannel("A"))
+            img = flat
+        else:
+            img = img.convert("RGB")
+        img.thumbnail((900, 900))
+        buffer = BytesIO()
+        img.save(buffer, "JPEG", quality=80, optimize=True)
+        self.photo_data = buffer.getvalue()
+        self.photo_version += 1
+
+    def clear_photo(self):
+        self.photo_data = None
+        self.photo_version = 0
 
 
 class Table(models.Model):

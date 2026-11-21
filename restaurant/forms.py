@@ -12,9 +12,23 @@ class RegisterForm(UserCreationForm):
 
 
 class DishForm(forms.ModelForm):
+    new_photo = forms.ImageField(required=False, label="Photo (JPG or PNG, under 4 MB)")
+    remove_photo = forms.BooleanField(required=False, label="Remove the current photo")
+
     class Meta:
         model = Dish
-        fields = ["category", "name", "description", "price", "photo", "emoji", "is_available"]
+        fields = ["category", "name", "description", "price", "emoji", "is_available"]
+
+    def save(self, commit=True):
+        dish = super().save(commit=False)
+        upload = self.cleaned_data.get("new_photo")
+        if upload:
+            dish.set_photo(upload)
+        elif self.cleaned_data.get("remove_photo"):
+            dish.clear_photo()
+        if commit:
+            dish.save()
+        return dish
 
 
 class CustomerAuthForm(AuthenticationForm):

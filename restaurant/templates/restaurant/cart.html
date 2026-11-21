@@ -6,7 +6,7 @@
 <div class="panel">
   {% for l in lines %}
   <div class="it">
-    <span class="em">{% if l.dish.photo %}<img src="{{ l.dish.photo.url }}" alt="">{% else %}{{ l.dish.emoji }}{% endif %}</span>
+    <span class="em">{% if l.dish.photo_url %}<img src="{{ l.dish.photo_url }}" alt="">{% else %}{{ l.dish.emoji }}{% endif %}</span>
     <b>{{ l.dish.name }}<br><small>RM {{ l.dish.price|floatformat:2 }}</small></b>
     <div class="qty">
       <form method="post" action="{% url 'cart_change' l.dish.id 'dec' %}">{% csrf_token %}<button aria-label="Less">−</button></form>

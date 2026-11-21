@@ -7,6 +7,7 @@ from . import views
 
 urlpatterns = [
     path("", views.menu, name="menu"),
+    path("dish/<int:pk>/photo/", views.dish_photo, name="dish_photo"),
     path("t/<int:number>/", views.table_entry, name="table_entry"),
     path("table/set/", views.set_table, name="set_table"),
     path("cart/", views.cart_detail, name="cart"),

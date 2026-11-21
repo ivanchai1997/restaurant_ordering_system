@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -171,3 +171,12 @@ def my_orders(request):
     else:
         orders = Order.objects.filter(pk__in=request.session.get("my_orders", []))
     return render(request, "restaurant/my_orders.html", {"orders": orders.prefetch_related("items")})
+
+
+def dish_photo(request, pk):
+    data = Dish.objects.filter(pk=pk).order_by().values_list("photo_data", flat=True).first()
+    if not data:
+        raise Http404
+    response = HttpResponse(bytes(data), content_type="image/jpeg")
+    response["Cache-Control"] = "public, max-age=86400"
+    return response

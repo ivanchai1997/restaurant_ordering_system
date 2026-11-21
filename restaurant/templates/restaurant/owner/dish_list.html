@@ -9,7 +9,7 @@
   <tr><th>Dish</th><th>Category</th><th>Price</th><th>Shown</th><th></th></tr>
   {% for d in dishes %}
   <tr>
-    <td>{% if d.photo %}<img class="thumb" src="{{ d.photo.url }}" alt="">{% else %}{{ d.emoji }}{% endif %} {{ d.name }}</td>
+    <td>{% if d.photo_url %}<img class="thumb" src="{{ d.photo_url }}" alt="">{% else %}{{ d.emoji }}{% endif %} {{ d.name }}</td>
     <td>{{ d.category }}</td><td>RM {{ d.price|floatformat:2 }}</td>
     <td><form method="post" action="{% url 'owner_dish_toggle' d.pk %}">{% csrf_token %}<button class="btn ghost sm">{% if d.is_available %}Hide{% else %}Show{% endif %}</button></form></td>
     <td class="actions">

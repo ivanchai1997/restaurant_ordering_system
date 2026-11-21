@@ -4,7 +4,9 @@
 <div class="narrow">
   <h2>{% if dish %}Edit {{ dish.name }}{% else %}Add a dish{% endif %}</h2>
   <form method="post" enctype="multipart/form-data" class="panel stack formgrid">
-    {% csrf_token %}{{ form.as_p }}
+    {% csrf_token %}
+    {% if dish and dish.photo_url %}<p><img class="thumb" style="width:120px;height:120px" src="{{ dish.photo_url }}" alt="Current photo"></p>{% endif %}
+    {{ form.as_p }}
     <button class="btn">Save dish</button>
     <a class="btn ghost" href="{% url 'owner_dishes' %}">Cancel</a>
   </form>
