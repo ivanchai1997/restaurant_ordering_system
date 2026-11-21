@@ -2,6 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import owner_views as owner
+from .forms import AdminAuthForm, CustomerAuthForm
 from . import views
 
 urlpatterns = [
@@ -15,11 +16,15 @@ urlpatterns = [
     path("checkout/", views.checkout, name="checkout"),
     path("welcome/", views.welcome, name="welcome"),
     path("register/", views.register, name="register"),
-    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("login/", auth_views.LoginView.as_view(authentication_form=CustomerAuthForm), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("orders/", views.my_orders, name="my_orders"),
     path("orders/<int:pk>/", views.order_detail, name="order_detail"),
-    # owner pages
+    # admin (restaurant staff) area, with its own sign-in
+    path("owner/login/", auth_views.LoginView.as_view(template_name="restaurant/owner/login.html", authentication_form=AdminAuthForm, next_page="owner_dashboard"), name="owner_login"),
+    path("owner/logout/", auth_views.LogoutView.as_view(next_page="owner_login"), name="owner_logout"),
+    path("owner/sales/", owner.sales, name="owner_sales"),
+    path("owner/sales/export/", owner.sales_export, name="owner_sales_export"),
     path("owner/", owner.dashboard, name="owner_dashboard"),
     path("owner/orders/<int:pk>/status/", owner.order_status, name="owner_order_status"),
     path("owner/dishes/", owner.dish_list, name="owner_dishes"),

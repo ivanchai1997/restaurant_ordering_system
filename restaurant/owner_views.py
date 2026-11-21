@@ -12,8 +12,9 @@ from django.views.decorators.http import require_POST
 
 from .forms import DishForm
 from .models import Category, Dish, Order, Table
+from .sales import build_report, workbook_bytes
 
-owner_required = staff_member_required(login_url="login")
+owner_required = staff_member_required(login_url="owner_login")
 
 
 @owner_required
@@ -112,3 +113,19 @@ def table_qr(request, number):
     buffer = io.BytesIO()
     image.save(buffer)
     return HttpResponse(buffer.getvalue(), content_type="image/svg+xml")
+
+
+@owner_required
+def sales(request):
+    return render(request, "restaurant/owner/sales.html", build_report(request.GET.get("view", "daily"), request.GET))
+
+
+@owner_required
+def sales_export(request):
+    report = build_report(request.GET.get("view", "daily"), request.GET)
+    response = HttpResponse(
+        workbook_bytes(report),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = f'attachment; filename="{report["filename"]}"'
+    return response

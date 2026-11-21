@@ -1,10 +1,29 @@
-{% extends "restaurant/base.html" %}
-{% block content %}
-<div class="subnav">
-  <a href="{% url 'owner_dashboard' %}">Orders</a>
-  <a href="{% url 'owner_dishes' %}">Dishes</a>
-  <a href="{% url 'owner_tables' %}">Tables &amp; QR codes</a>
-  <a href="{% url 'admin:index' %}">Django admin</a>
-</div>
-{% block owner %}{% endblock %}
-{% endblock %}
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Admin · William’s{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'restaurant/style.css' %}">
+{% block head %}{% endblock %}
+</head>
+<body>
+<header class="top admin-top">
+  <span class="logo gold">William’s</span><span class="rolebadge">Admin</span>
+  {% if user.is_staff %}
+  <nav>
+    <a href="{% url 'owner_dashboard' %}">Orders</a>
+    <a href="{% url 'owner_dishes' %}">Dishes</a>
+    <a href="{% url 'owner_sales' %}">Sales</a>
+    <a href="{% url 'owner_tables' %}">Tables &amp; QR</a>
+    <a href="{% url 'admin:index' %}">Database</a>
+    <a href="{% url 'menu' %}" target="_blank" rel="noopener">View site</a>
+    <form method="post" action="{% url 'owner_logout' %}" class="inline">{% csrf_token %}<button class="btn ghost sm">Sign out ({{ user.get_username }})</button></form>
+  </nav>
+  {% endif %}
+</header>
+{% if messages %}<div class="msgs">{% for m in messages %}<div class="msg {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}</div>{% endif %}
+<main>{% block owner %}{% endblock %}</main>
+</body>
+</html>

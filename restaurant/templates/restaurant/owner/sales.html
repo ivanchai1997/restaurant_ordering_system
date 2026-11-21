@@ -1,0 +1,44 @@
+{% extends "restaurant/owner/base.html" %}
+{% block title %}Sales · Admin{% endblock %}
+{% block owner %}
+<h2>Sales overview</h2>
+<div class="cards3">
+  <div class="stat"><small>Today</small><b>RM {{ cards.today.revenue|floatformat:2 }}</b><span>{{ cards.today.orders }} order{{ cards.today.orders|pluralize }}</span></div>
+  <div class="stat"><small>This month</small><b>RM {{ cards.month.revenue|floatformat:2 }}</b><span>{{ cards.month.orders }} order{{ cards.month.orders|pluralize }}</span></div>
+  <div class="stat"><small>This year</small><b>RM {{ cards.year.revenue|floatformat:2 }}</b><span>{{ cards.year.orders }} order{{ cards.year.orders|pluralize }}</span></div>
+</div>
+<div class="chips">
+  <a class="chip {% if view == 'daily' %}on{% endif %}" href="?view=daily&basis={{ basis }}">Daily</a>
+  <a class="chip {% if view == 'monthly' %}on{% endif %}" href="?view=monthly&basis={{ basis }}">Monthly</a>
+  <a class="chip {% if view == 'yearly' %}on{% endif %}" href="?view=yearly&basis={{ basis }}">Yearly</a>
+</div>
+<form method="get" class="row panel">
+  <input type="hidden" name="view" value="{{ view }}">
+  {% if view == 'daily' %}<label style="margin:0">Month<input type="month" name="month" value="{{ month_value }}"></label>{% endif %}
+  {% if view == 'monthly' %}<label style="margin:0">Year<input type="number" name="year" value="{{ year }}" min="2000" max="2100"></label>{% endif %}
+  <label style="margin:0">Count
+    <select name="basis">
+      <option value="all" {% if basis == 'all' %}selected{% endif %}>All orders (not cancelled)</option>
+      <option value="paid" {% if basis == 'paid' %}selected{% endif %}>Paid orders only</option>
+    </select>
+  </label>
+  <button class="btn ghost">Apply</button>
+  <a class="btn" href="{% url 'owner_sales_export' %}?{{ query }}">Download Excel</a>
+</form>
+
+<h3>{{ title }}</h3>
+<div class="tw"><table>
+  <tr><th>{{ period_name }}</th><th>Orders</th><th>Items sold</th><th>Revenue (RM)</th><th></th></tr>
+  {% for r in rows %}
+  <tr><td>{{ r.label }}</td><td>{{ r.orders }}</td><td>{{ r.qty }}</td><td>{{ r.revenue|floatformat:2 }}</td><td class="barcell"><div class="bar" style="width:{{ r.pct }}%"></div></td></tr>
+  {% empty %}<tr><td colspan="5" class="empty">No sales yet.</td></tr>{% endfor %}
+  <tr class="total"><td>Total</td><td>{{ totals.orders }}</td><td>{{ totals.qty }}</td><td>{{ totals.revenue|floatformat:2 }}</td><td></td></tr>
+</table></div>
+
+<h3 style="margin-top:28px">Best sellers in this period</h3>
+<div class="tw"><table>
+  <tr><th>Dish</th><th>Quantity</th><th>Revenue (RM)</th></tr>
+  {% for d in top_dishes %}<tr><td>{{ d.name }}</td><td>{{ d.qty }}</td><td>{{ d.revenue|floatformat:2 }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="empty">No sales in this period.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

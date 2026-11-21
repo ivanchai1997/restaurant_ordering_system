@@ -1,0 +1,13 @@
+{% extends "restaurant/owner/base.html" %}
+{% block title %}Admin sign in · William’s{% endblock %}
+{% block owner %}
+<div class="narrow">
+  <h2>Admin sign in</h2>
+  <p class="hint">For restaurant staff only. Customers sign in on the <a href="{% url 'menu' %}">main site</a>.</p>
+  <form method="post" class="panel stack formgrid">
+    {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    {{ form.as_p }}
+    <button class="btn">Sign in to admin</button>
+  </form>
+</div>
+{% endblock %}
