@@ -26,7 +26,7 @@ def build_report(view, params):
     basis = "paid" if params.get("basis") == "paid" else "all"
     base = Order.objects.exclude(status="cancelled")
     if basis == "paid":
-        base = base.filter(status="paid")
+        base = base.filter(status__in=["paid", "cleared"])
 
     cards = {
         "today": _totals(base.filter(created__date=today)),

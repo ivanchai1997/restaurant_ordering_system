@@ -1,0 +1,18 @@
+{% extends "restaurant/owner/print_base.html" %}
+{% block title %}Order #{{ order.pk }}{% endblock %}
+{% block body %}
+<div class="c big">William’s Restaurant</div>
+<div class="c">ORDER LIST</div>
+<hr>
+<div class="r"><b>Order #{{ order.pk }}</b><b>{{ order.where }}</b></div>
+<div>{{ order.created|date:"j M Y, g:i a" }}</div>
+<hr>
+{% for i in order.items.all %}<div class="item"><span class="q">{{ i.quantity }} ×</span>{{ i.name }}</div>{% endfor %}
+{% if order.note %}<hr><div>Note: {{ order.note }}</div>{% endif %}
+<hr>
+<div class="actions noprint">
+  <button type="button" class="go" onclick="window.print()">Print</button>
+  <button type="button" onclick="window.close()">Close</button>
+</div>
+{% endblock %}
+{% block script %}<script>window.addEventListener('load',function(){setTimeout(function(){window.print()},300)})</script>{% endblock %}

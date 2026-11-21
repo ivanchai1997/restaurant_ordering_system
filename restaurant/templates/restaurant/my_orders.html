@@ -4,7 +4,7 @@
 <h2>My orders</h2>
 {% for o in orders %}
 <a class="panel orderlink" href="{% url 'order_detail' o.pk %}">
-  <div class="row"><b>#{{ o.pk }} · {{ o.where }}</b><span class="badge {{ o.status }}">{{ o.get_status_display }}</span></div>
+  <div class="row"><b>#{{ o.pk }} · {{ o.where }}</b><span class="badge {{ o.status }}">{% if o.status == 'cleared' %}Paid{% else %}{{ o.get_status_display }}{% endif %}</span></div>
   <small>{% for i in o.items.all %}{{ i.quantity }}× {{ i.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
   <div class="row"><span>{{ o.created|date:"j M, g:i a" }}</span><span class="price">RM {{ o.total|floatformat:2 }}</span></div>
 </a>

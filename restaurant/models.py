@@ -89,6 +89,7 @@ class Order(models.Model):
         ("preparing", "Preparing"),
         ("served", "Served"),
         ("paid", "Paid"),
+        ("cleared", "Cleared"),
         ("cancelled", "Cancelled"),
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
@@ -96,6 +97,7 @@ class Order(models.Model):
     table = models.ForeignKey(Table, null=True, blank=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=12, choices=STATUS, default="new")
     note = models.CharField(max_length=300, blank=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -1,0 +1,30 @@
+{% extends "restaurant/owner/print_base.html" %}
+{% block title %}Receipt #{{ order.pk }}{% endblock %}
+{% block body %}
+<div class="c big">William’s Restaurant</div>
+<div class="c">Jalan Heeren, Melaka</div>
+<div class="c">RECEIPT</div>
+<hr>
+<div class="r"><span>Receipt #{{ order.pk }}</span><span>{{ order.where }}</span></div>
+<div>{{ order.paid_at|default:order.created|date:"j M Y, g:i a" }}</div>
+<div>Customer: {{ order.customer_name|default:"Guest" }}</div>
+<hr>
+<table>
+  <tr><th>Qty</th><th>Item</th><th class="n">Price</th><th class="n">Amount</th></tr>
+  {% for i in order.items.all %}
+  <tr><td>{{ i.quantity }}</td><td>{{ i.name }}</td><td class="n">{{ i.price|floatformat:2 }}</td><td class="n">{{ i.subtotal|floatformat:2 }}</td></tr>
+  {% endfor %}
+</table>
+<hr>
+<div class="r total"><span>TOTAL</span><span>RM {{ order.total|floatformat:2 }}</span></div>
+<hr>
+<div class="c"><span class="stamp">PAID</span></div>
+<div class="c">Thank you for dining with us!</div>
+<div class="actions noprint">
+  <button type="button" class="go" onclick="window.print()">Print receipt</button>
+  {% if order.status == 'paid' %}
+  <form method="post" action="{% url 'owner_order_status' order.pk %}">{% csrf_token %}<input type="hidden" name="status" value="cleared"><input type="hidden" name="back" value="{% url 'owner_dashboard' %}"><button type="submit">Clear order</button></form>
+  {% endif %}
+  <a href="{% url 'owner_dashboard' %}">Back to orders</a>
+</div>
+{% endblock %}

@@ -6,8 +6,11 @@ accounts and orders live in one shared database, so an order placed on a custome
 ## Features
 - **Customers:** create an account, sign in, or continue as a guest. Add, change and remove dishes in the order, then place it.
 - **Table QR codes:** scanning a table’s code opens the menu with that table chosen. Orders are tagged with the table, or “Takeaway”.
-- **Owner (staff user) at `/owner/`:** see and update customer orders (New, Preparing, Served, Paid, Cancelled), add / edit / hide / delete dishes with photos and prices, add categories, set the number of tables, and print every table’s QR code.
+- **Admin (staff accounts only) at `/owner/`, with its own sign-in at `/owner/login/`:** see and update customer orders (New, Preparing, Served, Paid, Cancelled), add / edit / hide / delete dishes with photos and prices, add categories, set the number of tables, and print every table’s QR code.
 - **Django admin** at `/admin/` for full database access.
+
+- **Sales reports:** daily, monthly and yearly revenue, best sellers, and a **Download Excel** button (needs `openpyxl`).
+- **Roles:** customers sign in at `/login/` and can never open admin pages. Staff accounts sign in at `/owner/login/` and are refused at the customer login. Create more admins in the Django admin (`/admin/` → Users → tick “Staff status”) or with `python manage.py createsuperuser`.
 
 ## Run it
 ```bash

@@ -1,10 +1,11 @@
 {% extends "restaurant/owner/base.html" %}
-{% block title %}Orders · Owner{% endblock %}
+{% block title %}Orders · Admin{% endblock %}
 {% block head %}<meta http-equiv="refresh" content="30">{% endblock %}
 {% block owner %}
 <h2>Customer orders</h2>
 <div class="chips">
   <a class="chip {% if show == 'open' %}on{% endif %}" href="?show=open">Open orders</a>
+  <a class="chip {% if show == 'cleared' %}on{% endif %}" href="?show=cleared">Cleared</a>
   <a class="chip {% if show == 'all' %}on{% endif %}" href="?show=all">All orders</a>
 </div>
 {% for o in orders %}
@@ -12,14 +13,21 @@
   <div class="row"><b>#{{ o.pk }} · {{ o.where }} · {{ o.customer_name|default:"Guest" }}</b><span class="badge {{ o.status }}">{{ o.get_status_display }}</span></div>
   {% for i in o.items.all %}<div class="it"><b>{{ i.quantity }}× {{ i.name }}</b><span class="sub">RM {{ i.subtotal|floatformat:2 }}</span></div>{% endfor %}
   {% if o.note %}<p class="hint">Note: {{ o.note }}</p>{% endif %}
-  <div class="row">
+  <div class="row" style="margin-top:10px">
     <span>{{ o.created|date:"j M, g:i a" }} · <span class="price">RM {{ o.total|floatformat:2 }}</span></span>
-    <form method="post" action="{% url 'owner_order_status' o.pk %}" class="inline">{% csrf_token %}
-      <input type="hidden" name="back" value="{{ request.get_full_path }}">
-      <select name="status" onchange="this.form.submit()" aria-label="Order status">
-        {% for value, label in statuses %}<option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-      </select>
-    </form>
+    <div class="acts">
+      <a class="btn ghost sm" href="{% url 'owner_ticket' o.pk %}" target="_blank" rel="noopener">Print order</a>
+      {% if o.status == 'paid' or o.status == 'cleared' %}<a class="btn ghost sm" href="{% url 'owner_receipt' o.pk %}">Receipt</a>{% endif %}
+      {% if o.status == 'paid' %}
+      <form method="post" action="{% url 'owner_order_status' o.pk %}">{% csrf_token %}<input type="hidden" name="status" value="cleared"><input type="hidden" name="back" value="{{ request.get_full_path }}"><button class="btn sm">Clear order</button></form>
+      {% endif %}
+      <form method="post" action="{% url 'owner_order_status' o.pk %}">{% csrf_token %}
+        <input type="hidden" name="back" value="{{ request.get_full_path }}">
+        <select name="status" onchange="this.form.submit()" aria-label="Order status">
+          {% for value, label in statuses %}<option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </form>
+    </div>
   </div>
 </div>
 {% empty %}<p class="empty">No orders to show. This page refreshes every 30 seconds.</p>{% endfor %}
