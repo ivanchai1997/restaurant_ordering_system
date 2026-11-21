@@ -62,7 +62,7 @@ class Dish(models.Model):
             img = flat
         else:
             img = img.convert("RGB")
-        img.thumbnail((1400, 1400))
+        img = ImageOps.fit(img, (1200, 900), Image.Resampling.LANCZOS)  # exactly the menu box shape
         buffer = BytesIO()
         img.save(buffer, "JPEG", quality=82, optimize=True)
         self.photo_data = buffer.getvalue()
