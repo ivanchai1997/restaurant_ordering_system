@@ -1,0 +1,17 @@
+{% extends "restaurant/base.html" %}
+{% block title %}Welcome · William’s{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h2>Welcome to William’s</h2>
+  <p class="hint">Sign in to keep your order history, or continue as a guest.</p>
+  <div class="stack">
+    <a class="btn" href="{% url 'login' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Sign in</a>
+    <a class="btn ghost" href="{% url 'register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Create account</a>
+  </div>
+  <form method="post" class="panel stack">
+    {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    <label>Your name (optional)<input name="name" maxlength="100" placeholder="So the kitchen can call you"></label>
+    <button class="btn ghost">Continue as guest</button>
+  </form>
+</div>
+{% endblock %}

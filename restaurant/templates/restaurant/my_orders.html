@@ -1,0 +1,12 @@
+{% extends "restaurant/base.html" %}
+{% block title %}My orders · William’s{% endblock %}
+{% block content %}
+<h2>My orders</h2>
+{% for o in orders %}
+<a class="panel orderlink" href="{% url 'order_detail' o.pk %}">
+  <div class="row"><b>#{{ o.pk }} · {{ o.where }}</b><span class="badge {{ o.status }}">{{ o.get_status_display }}</span></div>
+  <small>{% for i in o.items.all %}{{ i.quantity }}× {{ i.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+  <div class="row"><span>{{ o.created|date:"j M, g:i a" }}</span><span class="price">RM {{ o.total|floatformat:2 }}</span></div>
+</a>
+{% empty %}<p class="empty">No orders yet. <a href="{% url 'menu' %}">Browse the menu.</a></p>{% endfor %}
+{% endblock %}

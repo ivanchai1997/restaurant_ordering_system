@@ -1,0 +1,12 @@
+{% extends "restaurant/owner/base.html" %}
+{% block title %}{% if dish %}Edit dish{% else %}Add dish{% endif %} · Owner{% endblock %}
+{% block owner %}
+<div class="narrow">
+  <h2>{% if dish %}Edit {{ dish.name }}{% else %}Add a dish{% endif %}</h2>
+  <form method="post" enctype="multipart/form-data" class="panel stack formgrid">
+    {% csrf_token %}{{ form.as_p }}
+    <button class="btn">Save dish</button>
+    <a class="btn ghost" href="{% url 'owner_dishes' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

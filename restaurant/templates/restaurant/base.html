@@ -1,0 +1,31 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}William’s Restaurant · Melaka{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'restaurant/style.css' %}">
+{% block head %}{% endblock %}
+</head>
+<body>
+<header class="top">
+  <a class="logo gold" href="{% url 'menu' %}">William’s</a>
+  <nav>
+    <a href="{% url 'menu' %}">Menu</a>
+    <a href="{% url 'my_orders' %}">My orders</a>
+    {% if user.is_staff %}<a href="{% url 'owner_dashboard' %}">Owner</a>{% endif %}
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="btn ghost sm">Sign out ({{ user.get_username }})</button></form>
+    {% else %}
+      <a class="btn ghost sm" href="{% url 'welcome' %}">{% if is_guest %}Guest · sign in{% else %}Sign in{% endif %}</a>
+    {% endif %}
+    <a class="btn sm" href="{% url 'cart' %}">Order <span class="pill">{{ cart_count }}</span></a>
+  </nav>
+</header>
+{% if messages %}<div class="msgs">{% for m in messages %}<div class="msg {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}</div>{% endif %}
+{% block hero %}{% endblock %}
+<main>{% block content %}{% endblock %}</main>
+<footer>William’s Restaurant · Jalan Heeren, Melaka · Open daily 11am to 10pm</footer>
+</body>
+</html>

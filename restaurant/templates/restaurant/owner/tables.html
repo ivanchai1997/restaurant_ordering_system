@@ -1,0 +1,17 @@
+{% extends "restaurant/owner/base.html" %}
+{% block title %}Tables · Owner{% endblock %}
+{% block owner %}
+<div class="noprint">
+  <h2>Tables and QR codes</h2>
+  <p class="hint">Print these and put one on each table. Customers scan with their phone camera and the menu opens with their table already chosen. For codes that work on customers’ phones, open this page from your public address, or set PUBLIC_BASE_URL.</p>
+  <form method="post" class="row panel">{% csrf_token %}
+    <label style="flex:1;margin:0">Number of tables<input name="count" type="number" min="1" max="60" value="{{ count|default:12 }}"></label>
+    <button class="btn ghost">Save</button>
+    <button type="button" class="btn" onclick="window.print()">Print all codes</button>
+  </form>
+</div>
+<div class="qrs">
+  {% for t in tables %}<figure class="qr"><div class="qbox"><img src="{% url 'table_qr' t.number %}" width="160" height="160" alt="QR code for table {{ t.number }}"></div><figcaption>Table {{ t.number }}</figcaption></figure>
+  {% empty %}<p class="empty">No tables yet. Set the number of tables above.</p>{% endfor %}
+</div>
+{% endblock %}

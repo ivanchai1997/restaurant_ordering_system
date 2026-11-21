@@ -1,0 +1,38 @@
+{% extends "restaurant/base.html" %}
+{% block title %}Your order · William’s{% endblock %}
+{% block content %}
+<h2>Your order</h2>
+{% if lines %}
+<div class="panel">
+  {% for l in lines %}
+  <div class="it">
+    <span class="em">{% if l.dish.photo %}<img src="{{ l.dish.photo.url }}" alt="">{% else %}{{ l.dish.emoji }}{% endif %}</span>
+    <b>{{ l.dish.name }}<br><small>RM {{ l.dish.price|floatformat:2 }}</small></b>
+    <div class="qty">
+      <form method="post" action="{% url 'cart_change' l.dish.id 'dec' %}">{% csrf_token %}<button aria-label="Less">−</button></form>
+      {{ l.quantity }}
+      <form method="post" action="{% url 'cart_change' l.dish.id 'inc' %}">{% csrf_token %}<button aria-label="More">+</button></form>
+    </div>
+    <span class="sub">RM {{ l.subtotal|floatformat:2 }}</span>
+    <form method="post" action="{% url 'cart_change' l.dish.id 'remove' %}">{% csrf_token %}<button class="x" aria-label="Remove {{ l.dish.name }}">🗑</button></form>
+  </div>
+  {% endfor %}
+  <form method="post" action="{% url 'checkout' %}" class="stack">
+    {% csrf_token %}
+    <label>Serve to
+      <select name="table">
+        <option value="0">Takeaway</option>
+        {% for t in tables %}<option value="{{ t.number }}" {% if current_table == t.number %}selected{% endif %}>Table {{ t.number }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Note for the kitchen (optional)<input name="note" maxlength="300" placeholder="No onions, steak medium well…"></label>
+    <div class="row"><span>Total</span><span class="price">RM {{ total|floatformat:2 }}</span></div>
+    {% if not can_order %}<p class="hint">You’ll be asked to sign in or continue as a guest when you place the order.</p>{% endif %}
+    <button class="btn">Place order</button>
+  </form>
+  <form method="post" action="{% url 'cart_clear' %}" class="stack">{% csrf_token %}<button class="btn ghost">Clear order</button></form>
+</div>
+{% else %}
+<p class="empty">Your order is empty. <a href="{% url 'menu' %}">Pick something tasty from the menu.</a></p>
+{% endif %}
+{% endblock %}

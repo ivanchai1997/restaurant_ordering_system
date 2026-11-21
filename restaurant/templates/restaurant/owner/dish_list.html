@@ -1,0 +1,22 @@
+{% extends "restaurant/owner/base.html" %}
+{% block title %}Dishes · Owner{% endblock %}
+{% block owner %}
+<div class="row"><h2>Dishes</h2><a class="btn" href="{% url 'owner_dish_new' %}">Add dish</a></div>
+<form method="post" action="{% url 'owner_category_add' %}" class="row panel">{% csrf_token %}
+  <label style="flex:1;margin:0">New category<input name="name" placeholder="Desserts, Drinks…" required></label><button class="btn ghost">Add category</button>
+</form>
+<div class="tw"><table>
+  <tr><th>Dish</th><th>Category</th><th>Price</th><th>Shown</th><th></th></tr>
+  {% for d in dishes %}
+  <tr>
+    <td>{% if d.photo %}<img class="thumb" src="{{ d.photo.url }}" alt="">{% else %}{{ d.emoji }}{% endif %} {{ d.name }}</td>
+    <td>{{ d.category }}</td><td>RM {{ d.price|floatformat:2 }}</td>
+    <td><form method="post" action="{% url 'owner_dish_toggle' d.pk %}">{% csrf_token %}<button class="btn ghost sm">{% if d.is_available %}Hide{% else %}Show{% endif %}</button></form></td>
+    <td class="actions">
+      <a class="btn sm" href="{% url 'owner_dish_edit' d.pk %}">Edit</a>
+      <form method="post" action="{% url 'owner_dish_delete' d.pk %}" onsubmit="return confirm('Delete this dish from the menu?')">{% csrf_token %}<button class="btn red sm">Delete</button></form>
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="5" class="empty">No dishes yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

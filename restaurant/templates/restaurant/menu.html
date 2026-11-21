@@ -1,0 +1,31 @@
+{% extends "restaurant/base.html" %}
+{% block hero %}
+<section class="hero">
+  <span class="spark" style="left:12%;top:22%"></span><span class="spark" style="left:80%;top:30%;animation-delay:1s"></span>
+  <span class="spark" style="left:30%;top:75%;animation-delay:2s"></span><span class="spark" style="left:66%;top:70%;animation-delay:.5s"></span>
+  <div class="sub">Now open in Melaka town</div>
+  <h1 class="gold">William’s Restaurant</h1>
+  <p>Steaks seared to order, fresh pasta, warm bread and slow-simmered soups. A full western table, set for you.</p>
+</section>
+{% endblock %}
+{% block content %}
+<h2>Our menu</h2>
+{% if current_table %}<p class="tb">You’re ordering from Table {{ current_table }}</p>{% endif %}
+<div class="chips">
+  <a class="chip {% if not selected %}on{% endif %}" href="{% url 'menu' %}">All</a>
+  {% for c in categories %}<a class="chip {% if selected == c.id %}on{% endif %}" href="?c={{ c.id }}">{{ c.name }}</a>{% endfor %}
+</div>
+<div class="grid">
+  {% for d in dishes %}
+  <article class="card">
+    <div class="pic">{% if d.photo %}<img src="{{ d.photo.url }}" alt="{{ d.name }}" loading="lazy">{% else %}{{ d.emoji }}{% endif %}</div>
+    <div class="cb">
+      <h3>{{ d.name }}</h3><p>{{ d.description }}</p>
+      <div class="row"><span class="price">RM {{ d.price|floatformat:2 }}</span>
+        <form method="post" action="{% url 'cart_add' d.id %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn sm">Add to order</button></form>
+      </div>
+    </div>
+  </article>
+  {% empty %}<p class="empty">No dishes here yet.</p>{% endfor %}
+</div>
+{% endblock %}

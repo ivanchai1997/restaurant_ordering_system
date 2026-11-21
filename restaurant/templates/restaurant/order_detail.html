@@ -1,0 +1,16 @@
+{% extends "restaurant/base.html" %}
+{% block title %}Order #{{ order.pk }} · William’s{% endblock %}
+{% block head %}{% if order.status == 'new' or order.status == 'preparing' %}<meta http-equiv="refresh" content="20">{% endif %}{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h2>Order #{{ order.pk }}</h2>
+  <p><span class="badge {{ order.status }}">{{ order.get_status_display }}</span> · {{ order.where }} · {{ order.created|date:"j M, g:i a" }}</p>
+  <div class="panel">
+    {% for i in order.items.all %}<div class="it"><b>{{ i.quantity }}× {{ i.name }}</b><span class="sub">RM {{ i.subtotal|floatformat:2 }}</span></div>{% endfor %}
+    <div class="row" style="margin-top:12px"><span>Total</span><span class="price">RM {{ order.total|floatformat:2 }}</span></div>
+    {% if order.note %}<p class="hint">Note: {{ order.note }}</p>{% endif %}
+  </div>
+  <p class="hint">This page updates by itself while the kitchen prepares your order.</p>
+  <a class="btn ghost" href="{% url 'menu' %}">Back to menu</a>
+</div>
+{% endblock %}

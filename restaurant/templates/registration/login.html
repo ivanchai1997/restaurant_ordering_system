@@ -1,0 +1,13 @@
+{% extends "restaurant/base.html" %}
+{% block title %}Sign in · William’s{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h2>Sign in</h2>
+  <form method="post" class="panel stack formgrid">
+    {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    {{ form.as_p }}
+    <button class="btn">Sign in</button>
+  </form>
+  <p class="hint">New here? <a href="{% url 'register' %}">Create an account</a> or <a href="{% url 'welcome' %}">continue as a guest</a>. The owner signs in here too.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "restaurant/base.html" %}
+{% block content %}
+<div class="subnav">
+  <a href="{% url 'owner_dashboard' %}">Orders</a>
+  <a href="{% url 'owner_dishes' %}">Dishes</a>
+  <a href="{% url 'owner_tables' %}">Tables &amp; QR codes</a>
+  <a href="{% url 'admin:index' %}">Django admin</a>
+</div>
+{% block owner %}{% endblock %}
+{% endblock %}
